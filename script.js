@@ -660,7 +660,7 @@ function terminateBy(time){
 
 // slide thumbnails
 
-const slidesTimesList = [0, 50, 90, 120,180, 230, 300, 360, 450, 600, 660, 700, 750, 850, 900, 960]
+const slidesTimesList = [0, 15, 23, 43,55, 67, 70, 83, 90, 106, 110, 120]
 let slidesThumbsList = []
 
 function addInitialThumbs(){
