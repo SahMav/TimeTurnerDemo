@@ -672,7 +672,7 @@ function addInitialThumbs(){
     thumbnail.setAttribute("time", slidesTimesList[i])
     thumbnail.style.width = Math.min(5, (90/num - 1)) + "%"
     thumbnail.style.left = i * 100/(num) + 0.5 + "%"
-    thumbnail.style.backgroundImage = "url(./assets/slides/"+(i+1).toString()+".png)"
+    thumbnail.style.backgroundImage = "url(./master/assets/slides/"+(i+1).toString()+".png)"
     // thumbnail.style.backgroundImage = "url(assets/slides/2.png)"
     slidesContainer.appendChild(thumbnail)
     slidesThumbsList.push(thumbnail)
