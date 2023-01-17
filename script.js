@@ -249,7 +249,7 @@ function updateMissedPercent(){
 // Reminder to start asynchronous viewing
 let totalMissedPercent = 0
 let totalViewedPercent = 0
-let playbackPace = 1.7
+let playbackPace = 1.5
 let reminderSent = false
 let timeDifference
 let blinkInterval
@@ -271,6 +271,8 @@ function viewReminder(){
       console.log(requiredViewingTime)
       playSound(audioTrack)
       reminderSent = true
+      showAlertMark(slidersList[minInd].children[3])
+      showAlertMark(slider.children[3])
       // asyncThumbIndicator.style.left = sectionStarts[sectionInd] + "%"
       // asyncThumbIndicator.style.display = "block"
       // asyncThumbIndicator.children[1].textContent = "Start viewing!"
@@ -614,6 +616,7 @@ function checkforLiveEvents(){
     if (isAsync){
       if(syncVideo.currentTime >= eventTimesList[eventTimeInd]){
           playSound(audioTrack)
+          showAlertMark(activityBtn.children[1])
           smallWindowPrompt.textContent = promptsList[eventTimeInd]
           console.log(promptsList[eventTimeInd])
           syncThumbIndicator.children[0].setAttribute("src", "assets/teacher.png")
@@ -624,6 +627,7 @@ function checkforLiveEvents(){
       if(video.currentTime >= eventTimesList[eventTimeInd]){
         if(!isActive){
             playSound(audioTrack)
+            showAlertMark(activityBtn.children[1])
             // activateLive(eventTimeInd)
             bigWindowPrompt.textContent = promptsList[eventTimeInd]
             console.log(promptsList[eventTimeInd])
@@ -758,6 +762,7 @@ function updateSlideThumbs(){
     let bookmarkTime = parseInt(thumb.getAttribute("time"))
     if(bookmark.getAttribute("isOn") == "True"){
       playSound(audioTrack)
+      showAlertMark(bookmarkBtn.children[1])
       bookmark.style.display = "none"
       bookmark.setAttribute("isOn", "False")
       bookmarksList.splice(bookmarksList.indexOf(bookmarkTime), 1)
@@ -800,6 +805,18 @@ function playSound(url) {
   audio.play();
 }
 
+// show the alert mark on the button to make clear where the alerts sound is coming from
+function showAlertMark(element){
+  element.style.display = "block"
+  setTimeout(hideAlertMark(element), 4000)
+}
+
+function hideAlertMark(element){
+  return function() {
+    element.style.display = "none"
+  }
+}
+
 // clicking on liveWindow takes you to live
 liveVideoContainer.addEventListener("click", jumpToLive)
 
@@ -825,8 +842,10 @@ function setTimer(){
     timer.style.opacity = "100%"
   }
   else{
-    timerTime += 60
-    timer.style.left = timerTime /video.duration * 100 + "%"
+    if(timerTime + 60 < video.duration){
+      timerTime += 60
+      timer.style.left = timerTime /video.duration * 100 + "%"
+    }
   }
 }
 
@@ -850,6 +869,7 @@ function updateTimer(){
   if(timeLeft < 0 && timerClickNum > 0){
     playSound(audioTrack)
     deleteTimer()
+    showAlertMark(timerBtn.children[2])
   }
 }
 
