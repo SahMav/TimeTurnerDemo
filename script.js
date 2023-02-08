@@ -1385,7 +1385,7 @@ playPauseBtn.addEventListener("click", togglePlay)
 video.addEventListener("click", togglePlay)
 
 function togglePlay() {
-  video.paused ? video.play() : video.pause()
+  if(video.paused) video.play()
   startTime.textContent = time_0
   syncVideo.play()
   syncVideo.muted = true
