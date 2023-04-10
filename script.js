@@ -47,6 +47,12 @@ const catchUpTimeText = document.querySelector(".catch-up-time-text")
 const transcriptBody = document.querySelector(".transcript-body")
 const transcript = document.querySelector(".transcript")
 const liveLableMain = document.querySelector("#main-label")
+const audioBtnText = document.querySelector(".audio-btn-text")
+const transcriptButton = document.querySelector(".transcript-btn")
+const timeProgress = document.querySelector(".time-progress")
+const minimizeBtn = document.querySelector(".minimize-btn")
+const maximizeBtn = document.querySelector(".maximize-btn")
+const emailPopup = document.querySelector(".email-popup")
 
 
 
@@ -90,6 +96,8 @@ function update(){
   addSubtitles(syncVideo, syncSubtitle)
   addSubtitles(video, asyncSubtitle)
   updateTranscript()
+  updateTimeProgress()
+  updateMail()
 
 }
 
@@ -155,10 +163,19 @@ function moveSlider(e){
   const rect = timelineContainer.getBoundingClientRect()
   const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
   const startTime = today.getHours() * 3600 + today.getMinutes() * 60 + today.getSeconds()
-  const time = ~~(startTime + video.duration * percent)
-  const hour = ~~(time/3600)
-  const mintue = ~~((time - 3600 * hour)/60)
-  const timeText = hour+ ":" + mintue
+  // const time = ~~(startTime + video.duration * percent)
+  let time = ~~(video.duration * percent)
+  let hour = ~~(time/3600)
+  let minute = ~~((time - 3600 * hour)/60)
+  let second = ~~(time - 3600 * hour - 60 * minute)
+  // const timeText = hour+ ":" + minute
+  if(second < 10){
+  	second = "0" + second
+  }
+  if(minute < 10){
+  	minute = "0" + minute
+  }
+  const timeText = minute+ ":" + second
 
   if(isSliding && percent > video.currentTime / video.duration){
     let slider = slidersList[slidingSliderIndex]
@@ -194,8 +211,9 @@ window.addEventListener("focus", toggleFocus)
 
 // const green = "#93c47d"
 const green = "grey"
-const red = "#e06666"
+const red = "#083385"
 const audioTrack = "assets/alert3.wav"
+
 
 
 function toggleFocus(){
@@ -293,7 +311,7 @@ function updateMissedPercent(){
 // Reminder to start asynchronous viewing
 let totalMissedPercent = 0
 let totalViewedPercent = 0
-let playbackPace = 1.8
+let playbackPace = 1.6
 let reminderSent = false
 let timeDifference
 let blinkInterval
@@ -370,7 +388,7 @@ function blink(){
 let sectionInd = 0
 let isAsync = false
 const syncVideo = liveVideoContainer.children[0]
-syncVideo.style.filter = "grayscale(1)"
+// syncVideo.style.filter = "grayscale(1)"
 let midSectionStartTime = 0
 
 asyncThumbIndicator.addEventListener("click", startAV)
@@ -382,16 +400,23 @@ function startAV(time){
     asyncThumbIndicator.children[1].textContent = ""
     asyncThumbIndicator.children[0].src = "assets/student.png"
     asyncThumbIndicator.style.opacity = "100%"
-    mainVideoContainer.style.borderColor = green
+    mainVideoContainer.style.borderColor = red
 
     //setup live video container
-    liveVideoContainer.style.display = "block"
+    if(showLiveWindow){
+    	liveVideoContainer.style.display = "block"
+    }
+    else{
+    	maximizeBtn.style.display = "block"
+    }
     liveLableMain.style.display = "none"
     // syncVideo.currentTime = video.currentTime
     // syncVideo.play()
     syncVideo.playbackRate = 1
     // syncVideo.musted = true
-    syncVideo.style.filter = "grayscale(1)"
+    // syncVideo.style.filter = "grayscale(1)"
+    liveVideoContainer.style.borderColor = "grey"
+    syncVideo.style.borderColor = "grey"
 
 
     //start async viewing of the video
@@ -446,7 +471,7 @@ function jumpToLive(){
   if(isAsync){
       isAsync = false
       
-      // liveVideoContainer.style.display = "none"
+      liveVideoContainer.style.display = "none"
       liveLableMain.style.display = "block"
       mainVideoContainer.style.borderColor = "#595959"
       asyncThumbIndicator.children[0].src = "assets/student.png"
@@ -469,6 +494,8 @@ function jumpToLive(){
       //push the last red section's end
       sectionEnds.push(syncVideo.currentTime/video.duration * 100)
       redSectionActive = false
+
+      maximizeBtn.style.display = "none"
       // sectionInd += 1
 
       // deactive async viewing controls
@@ -519,7 +546,7 @@ function updateAsyncView(){
       isAsync = false
       video.playbackRate = 1
       // syncVideo.pause()
-      // liveVideoContainer.style.display = "none"
+      liveVideoContainer.style.display = "none"
       liveLableMain.style.display = "block"
       mainVideoContainer.style.borderColor = "#595959"
       asyncThumbIndicator.children[0].src = "assets/student.png"
@@ -563,6 +590,9 @@ function updateAsyncView(){
       greenSectionActive = false
       redSectionActive = false
 
+      maximizeBtn.style.display = "none"
+
+
       // deactive async viewing
       // asyncControls.style.opacity = "50%"
       // asyncControls.style.zIndex = "50"
@@ -582,6 +612,12 @@ function updateCatchUpLine(){
     leftArrow.style.left =  video.currentTime/video.duration * 100 + "%"
     catchUpTimeText.style.left = (syncVideo.currentTime + video.currentTime) * 0.5 /video.duration * 100 + "%"
     catchUpTimeText.textContent = convertToMinutes(((syncVideo.currentTime - video.currentTime)/playbackPace)/(1 - 1/playbackPace))
+    if(((syncVideo.currentTime - video.currentTime)/playbackPace)/(1 - 1/playbackPace) > video.duration - syncVideo.currentTime){
+    	catchUpTimeText.style.color = "red"
+    }
+    else{
+    	catchUpTimeText.style.color = "grey"
+    }
 }
 
 function removeCatchUpLine(){
@@ -594,31 +630,60 @@ function removeCatchUpLine(){
 // asynchronous controls event handling
 
 playBtn.addEventListener("click", togglePlayPause)
+video.addEventListener("click", togglePlayPause)
+
+var audioBtnisLive = false
+
 function togglePlayPause(){
-  if(video.paused){
-    video.play()
-    playBtn.children[0].setAttribute("src", "assets/pause-btn.png")
-    syncVideo.muted = true
-    syncVideo.style.filter = "grayscale(1)"
-    video.style.filter = "grayscale(0)"
+	if(started){
+		if(video.paused){
+		    video.play()
+		    playBtn.children[0].setAttribute("src", "assets/pause-btn.png")
+		    // syncVideo.style.filter = "grayscale(1)"
+		    liveVideoContainer.style.borderColor = "grey"
+		    // video.style.filter = "grayscale(0)"
+		    mainVideoContainer.style.borderColor = "#e06666"
 
-     //swtich which audio button is shown -> when video is playing the audio for the async video is playing
-    audioButtonLive.style.display = "none"
-    audioButtonMain.style.display = "block"
+		     //swtich which audio button is shown -> when video is playing the audio for the async video is playing
+		    // audioButtonLive.style.display = "none"
+		    // audioButtonMain.style.display = "block"
+		    audioBtnText.textContent = ""
+		    audioBtnisLive = false
 
-  } else{
-  	video.pause()
-  	video.currentTime -= 1
-  	startAV(video.currentTime)
-    playBtn.children[0].setAttribute("src", "assets/play-btn.png")
-    syncVideo.muted = false
-    syncVideo.style.filter = "grayscale(0)"
-    video.style.filter = "grayscale(1)"
+		    if(syncVideo.muted){
+		    	video.muted = true
+		    }else{
+		    	video.muted = false
+		    }
 
-    //swtich which audio button is shown -> when video is pause the audio for the sync video is playing
-    audioButtonLive.style.display = "block"
-    audioButtonMain.style.display = "none"
-  }  
+		    syncVideo.muted = true
+
+
+       }else{
+		  	video.pause()
+		  	video.currentTime -= 1
+		  	startAV(video.currentTime)
+		    playBtn.children[0].setAttribute("src", "assets/play-btn.png")
+		    // syncVideo.style.filter = "grayscale(0)"
+		    liveVideoContainer.style.borderColor = "#e06666"
+		    // video.style.filter = "grayscale(1)"
+		    mainVideoContainer.style.borderColor = "grey"
+
+		    //if audio is muted keep live video muted, otherwise play live audio
+		    if(!video.muted){
+		    	syncVideo.muted = false
+		    }
+		    else{
+		    	syncVideo.muted = true
+		    }
+
+		    //swtich which audio button is shown -> when video is pause the audio for the sync video is playing
+		    // audioButtonLive.style.display = "block"
+		    audioBtnText.textContent = "LIVE"
+		    audioBtnisLive = true
+		    // audioButtonMain.style.display = "none"
+	  		}  
+	}
 }
 
 //close btn
@@ -817,9 +882,14 @@ function convertToSeconds(list){
 function convertToMinutes(time){
 	let min = 0
 	let sec = time.toFixed(0)
-	if(time>60){
-		min = Math.floor(time/60)
-		sec = Math.floor(time - min * 60)
+	
+	min = Math.floor(time/60)
+	sec = Math.floor(time - min * 60)
+	if(sec < 10.0){
+		sec = "0" + sec
+	}
+	if(min < 10.0){
+		min = "0" + min
 	}
 	return (min+":"+sec)
 }
@@ -1082,22 +1152,41 @@ function addSubtitles(video, element){
 
 //--- audio buttons toggleing audio between main and live videos
 
-audioButtonMain.addEventListener("click", toggleAudio(video, audioButtonMain))
-audioButtonLive.addEventListener("click", toggleAudio(syncVideo, audioButtonLive))
+// audioButtonMain.addEventListener("click", toggleAudio(video, audioButtonMain))
+// audioButtonLive.addEventListener("click", toggleAudio(syncVideo, audioButtonLive))
 
-function toggleAudio(video, button){
-	return function(e){
-		e.stopPropagation();
-		if(video.muted){
-			video.muted = false
-			button.src = "assets/audio.png"
+// function toggleAudio(video, button){
+// 	return function(e){
+// 		e.stopPropagation();
+// 		if(video.muted){
+// 			video.muted = false
+// 			button.src = "assets/audio.png"
+// 		}
+// 		else{
+// 			video.muted = true
+// 			button.src = "assets/no-audio.png"
+// 		}
+// 	}
+
+// }
+
+audioButtonMain.addEventListener("click", toggleAudio)
+
+function toggleAudio(){
+	let currentVideo
+	if(audioBtnisLive){
+		currentVideo = syncVideo
+	}else{
+		currentVideo = video
+	}
+	if(currentVideo.muted){
+			currentVideo.muted = false
+			audioButtonMain.src = "assets/audio.png"
 		}
 		else{
-			video.muted = true
-			button.src = "assets/no-audio.png"
+			currentVideo.muted = true
+			audioButtonMain.src = "assets/no-audio.png"
 		}
-	}
-
 }
 
 
@@ -1154,10 +1243,117 @@ function addSentecenClickHandler(sentece, time){
 	}, false)
 }
 
+
+// toggle between showing trascript or not showing transcript
+transcriptButton.addEventListener("click", toggleShowTranscript)
+let transcriptIsShown = false
+function toggleShowTranscript(){
+	if(transcriptIsShown){
+		transcript.style.display = "none"
+		transcriptButton.children[1].style.display = "none"   //remove the red line
+		mainVideoContainer.style.width = "90%"
+		transcriptIsShown = false
+	}
+	else{
+		transcript.style.display = "block"
+		transcriptButton.children[1].style.display = "block"   //remove the red line
+		mainVideoContainer.style.width = "74%"
+		transcriptIsShown = true
+	}
+}
+
+
+// add time progress to the video
+function updateTimeProgress(){
+	let currentTimeString = convertToMinutes(syncVideo.currentTime)
+	let totalTimeString = convertToMinutes(syncVideo.duration)
+	timeProgress.textContent = currentTimeString + "/" + totalTimeString
+}
+// this function pauses the live stream and the recorded stream
+function pauseEverything(){
+	video.pause()
+	syncVideo.pause()
+}
+
+var showLiveWindow = true
+// minimize the live view
+function minimizeLiveWindow(e){
+	e.stopPropagation()
+	//hide the window
+	liveVideoContainer.style.display = "none"
+	showLiveWindow = false
+
+	//show the maximize button
+	maximizeBtn.style.display = "block"
+}
+
+function maximizeLiveWindow(e){
+	e.stopPropagation()
+	liveVideoContainer.style.display = "block"
+	showLiveWindow = true
+	maximizeBtn.style.display = "none"
+}
+
+minimizeBtn.addEventListener("click", minimizeLiveWindow)
+maximizeBtn.addEventListener("click", maximizeLiveWindow)
+
+
+
+
+//shows and hides the email pop up
+
+const mailAudio = "assets/alert.wav"
+let emailTimes = ['0:30', '11:0']
+let interruptionLength = 90
+emailTimes = convertToSeconds(emailTimes)
+
+emailPopup.addEventListener("click", openMail)
+
+function showMailPopup(){
+	emailPopup.style.display = "block"
+	playSound(mailAudio)
+}
+
+function hideMailPopup(){
+	emailPopup.style.display = "none"
+}
+
+var mailWindow = null
+function openMail(){
+  hideMailPopup()
+  setTimeout(function () {
+    mailWindow = window.open("./mail.html");
+  }, 500);
+}
+
+let nextEmailInd = 0
+let prevEmailInd = 0
+
+function updateMail(){
+	//show mail on email times
+	if(syncVideo.currentTime > emailTimes[nextEmailInd]){
+		// showMailPopup()
+    playSound(mailAudio)
+		nextEmailInd += 1
+	}
+	//hide mail icon after 1 minute
+	
+	if(syncVideo.currentTime > emailTimes[prevEmailInd] + interruptionLength){
+		// hideMailPopup()
+    playSound(mailAudio)
+		prevEmailInd += 1
+    // mailWindow.close()
+	}
+
+}
+
 //----- original video player
 document.addEventListener("keydown", e => {
   const tagName = document.activeElement.tagName.toLowerCase()
-
+  if(e.keyCode == 32){
+  	togglePlayPause()
+  	return
+  }
   if (tagName === "input") return
 
   switch (e.key.toLowerCase()) {
@@ -1165,6 +1361,9 @@ document.addEventListener("keydown", e => {
       if (tagName === "button") return
     case "k":
       togglePlay()
+      break
+    case "l":
+      pauseEverything()
       break
     case "f":
       toggleFullScreenMode()
@@ -1177,6 +1376,9 @@ document.addEventListener("keydown", e => {
       break
     case "m":
       toggleMute()
+      break
+    case "space":
+      togglePlayPause()
       break
     case "arrowleft":
     case "j":
@@ -1212,20 +1414,23 @@ timelineContainer.addEventListener("mousedown", toggleScrubbing)
 let isScrubbing = false
 let wasPaused
 function toggleScrubbing(e) {
-  const rect = timelineContainer.getBoundingClientRect()
-  const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
-  isScrubbing = (e.buttons & 1) === 1
-  // videoContainer.classList.toggle("scrubbing", isScrubbing)
-  if(percent < syncVideo.currentTime/video.duration){     // clicking on the timeline will start the review process
-    for(let i = 0; i < sectionStarts.length; i++){
-      console.log(sectionStarts[i], percent * 100)
-      if((sectionStarts[i] - percent*100) < 0.5 &&(sectionStarts[i] - percent*100) > -0.5){
-        startAV(sectionStarts[i]/100 * video.duration)
-        return
-      }
-    }
-    startAV(percent * video.duration)
-  }
+	if(started){
+		const rect = timelineContainer.getBoundingClientRect()
+  		const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
+  		isScrubbing = (e.buttons & 1) === 1
+  		// videoContainer.classList.toggle("scrubbing", isScrubbing)
+  		if(percent < syncVideo.currentTime/video.duration){     // clicking on the timeline will start the review process
+	    	for(let i = 0; i < sectionStarts.length; i++){
+	      		console.log(sectionStarts[i], percent * 100)
+	      		if((sectionStarts[i] - percent*100) < 0.5 &&(sectionStarts[i] - percent*100) > -0.5){
+	        		startAV(sectionStarts[i]/100 * video.duration)
+	        		return
+	      		}
+	    	}
+	    	startAV(percent * video.duration)
+  		}
+	}
+  
   // if (isScrubbing) {
   //   wasPaused = video.paused
   //   video.pause()
@@ -1285,7 +1490,6 @@ video.addEventListener("loadeddata", () => {
   totalTimeElem.textContent = formatDuration(video.duration)
 })
 
-
 // the funcitons are now called at function update()
 video.addEventListener("timeupdate", () => {
   currentTimeElem.textContent = formatDuration(video.currentTime)
@@ -1313,6 +1517,9 @@ function formatDuration(time) {
   }
 }
 
+totalTimeElem.textContent = formatDuration(video.currentTime)
+
+
 function skip(duration) {
   video.currentTime += duration
 }
@@ -1321,6 +1528,7 @@ function skip(duration) {
 muteBtn.addEventListener("click", toggleMute)
 volumeSlider.addEventListener("input", e => {
   video.volume = e.target.value
+  syncVideo.volume = e.target.value
   video.muted = e.target.value === 0
 })
 
@@ -1382,11 +1590,12 @@ video.addEventListener("leavepictureinpicture", () => {
 
 // Play/Pause
 playPauseBtn.addEventListener("click", togglePlay)
-video.addEventListener("click", togglePlay)
 
+var started = false
 function togglePlay() {
   if(video.paused) video.play()
-  startTime.textContent = time_0
+  started = true
+  // startTime.textContent = "00:00"
   syncVideo.play()
   syncVideo.muted = true
 }

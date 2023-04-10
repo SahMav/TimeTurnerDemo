@@ -10,6 +10,9 @@
 </head>
 <body>
   <div class="video-container paused" data-volume-level="high">
+    <div class="email-popup">
+      <img class="mail-icon" src="assets/mail.png">
+    </div>
     <div class="transcript">
       <span class="transcript-title">Transcript</span>
       <div class="search"></div>
@@ -21,7 +24,6 @@
     
     
     <div class="video-controls-container">
-      <span class="start-time-text"></span>
       <div class="timeline-container">
         <div class="timeline">
           <!-- <img class="preview-img"> -->
@@ -60,9 +62,9 @@
               <path fill="currentColor" d="M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z" />
             </svg>
           </button>
-          <input class="volume-slider" type="range" min="0" max="1" step="any" value="1">
+          <!-- <input class="volume-slider" type="range" min="0" max="1" step="any" value="1"> -->
         </div>
-        <div class="duration-container" style="display: none">
+        <div class="duration-container" style="display: none" >
           <div class="current-time">0:00</div>
           /
           <div class="total-time"></div>
@@ -108,7 +110,6 @@
         <input type="checkbox" id="answer" value="">
       </div>
       <span class="async-subtitle-text"></span>
-      <img class="audio-btn-main" src="assets/audio.png">
 
       <div class="async-controls">
         <div class="close-btn"><img src="assets/close-btn.png" class="btn-img"></div>
@@ -120,9 +121,13 @@
           <img src="assets/increase.png" class="increase-btn-img">
           <img src="assets/decrease.png" class="decrease-btn-img">
         </div>
+        <img class="audio-btn-main" src="assets/audio.png">
+        <span class="audio-btn-text"></span>
+        <input class="volume-slider" type="range" min="0" max="1" step="any" value="1">
+
 
         <div class="alert-tool-bar">
-      <div class="slider-btn">
+          <div class="slider-btn">
           <div class="slider">
             <img src="assets/flag.png" class="slider-img">
             <span class="slider-text"></span>
@@ -144,11 +149,19 @@
         <span class="alert-mark">!</span>
         <div class="switch-line"></div>
       </div>
+      <div class="transcript-btn">
+        <img src="assets/transcript.png" class="slider-img">
+        <div class="switch-line"></div>
+      </div>
       </div>
 
       </div>
       <span class="live-label" id="main-label">LIVE</span>
+      <span class="time-progress">00:00</span>
       
+      <div class="maximize-btn">
+        <span class="live-label">+</span>
+      </div>
     </div>
   <div class="live-video-container">
     <video src="assets/Video.mp4">
@@ -158,6 +171,9 @@
     <span class="sync-subtitle-text"></span>
     <span class="live-label">LIVE</span>
     <img class="audio-btn-live" src="assets/audio.png">
+    <div class="minimize-btn">
+      <span class="live-label">-</span>
+    </div>
   </div> 
   <div class="slides-container"></div> 
   </div>

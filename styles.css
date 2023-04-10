@@ -19,8 +19,8 @@ body {
 
 .main-video-container {
   position: absolute;
-  width: 74%;
-  top:0%;
+  width: 90%;
+  top:0.5%;
   /*height: 50%;*/
   max-height: 80%;
   display: flex;
@@ -29,7 +29,7 @@ body {
   margin-inline: auto;
   background-color: black;
   border-style: solid;
-  border-color: #595959;
+  border-color: #e06666;
   border-width: 7px;
   border-radius: 5px;
 }
@@ -151,16 +151,13 @@ video {
 .volume-container {
   display: flex;
   align-items: center;
+  position: absolute;
+  left: 50%;
+  height: 100%;
   display: none;
 }
 
-.volume-slider {
-  width: 0;
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: width 150ms ease-in-out, transform 150ms ease-in-out;
-  display: none;
-}
+
 
 .volume-container:hover .volume-slider,
 .volume-slider:focus-within {
@@ -227,7 +224,7 @@ video {
   top: 0;
   bottom: 0;
   right: calc(100% - var(--progress-position) * 100%);
-  background-color: rgb(200, 200, 200);
+  background-color: transparent;
 }
 
 /*.timeline .thumb-indicator {
@@ -382,12 +379,12 @@ video {
   /*height: 50%;*/
   /*max-width: 1000px;*/
   z-index: 3;
-  display: block;
+  display: none;
   justify-content: center;
   margin-inline: auto;
   background-color: black;
   border-style: solid;
-  border-color: red;
+  border-color: grey;
   border-width: 4px;
   border-radius: 5px;
 }
@@ -398,7 +395,7 @@ video {
   left: 50% + width/2;
   width: 100%;
   height: 7.5%;
-  background-color: rgba(100, 100, 100, 0.5);
+  background-color: rgba(80, 80, 80, 0.5);
   border-style: solid;
   /*border-color: #93c47d;*/
   border-color: transparent;
@@ -498,7 +495,7 @@ video {
   background-size: contain;
   left: 5%;
   top: 3%;
-  bottom: : 0%;
+  bottom: 0%;
   font-size: 100%;
   font-family: "Courier new";
   font-weight: bold;
@@ -527,8 +524,8 @@ video {
   position: absolute;
   width: 90%;
   height: 10%;
-  left: 5%
-  background-color: yellow;
+  left: 5%;
+  background-color: white;
   bottom: -1%;
 /*  display: flex;
 */  z-index: 100;
@@ -591,6 +588,7 @@ video {
   /*right: 0%;*/
   top: 0%;
   transform: translate(-50%,-120%);
+  cursor: pointer;
 }
 
 .slider-text {
@@ -717,27 +715,27 @@ video {
   font-size: 65%;
   font-family: "Courier new";
   font-weight: bold;
-  background-color: rgba(256, 256, 256, 0.8);
-  color: grey;
+  background-color: rgba(80, 80, 80, 0.8);
+  color: white;
   position: absolute;
 }
 .async-subtitle-text{
   position: absolute;
   background-size: contain;
   left:50% - width/2;
-  bottom: 7%;
+  bottom: 10%;
   font-size: 100%;
   font-family: "Courier new";
   font-weight: bold;
-  background-color: rgba(256, 256, 256, 0.8);
-  color: grey;
+  background-color: rgba(80, 80, 80, 0.8);
+  color: white;
   position: absolute;
 }
 
 .live-label{
   position: absolute;
   top: 1%;
-  right:0%;
+  left:1%;
   font-size: 13px;
   font-family: "Courier new";
   font-weight: bold;
@@ -761,14 +759,48 @@ video {
 
 .audio-btn-main{
   position: absolute;
-  height: 5%;
+  height: 80%;
   aspect-ratio : 1/1;
-  background-color: grey;
-  top:2%;
-  left: 1%;
+  background-color: transparent;
+  top:10%;
+  left: 20%;
   border-radius: 20%;
   cursor: pointer;
+  z-index: 10;
   display: block;
+}
+
+.volume-slider {
+  position: absolute;
+  left : 23%;
+  top: 25%;
+  width: 100px;
+  transform-origin: left;
+  transform: scaleX(1);
+  transition: width 150ms ease-in-out, transform 150ms ease-in-out;
+  display: block;
+  filter: grayscale(1);
+  background: white;
+}
+
+.audio-btn-main:hover .volume-slider,
+.volume-slider:focus-within{
+  display: block;
+  width: 100px;
+  transform: scaleX(1);
+}
+
+.audio-btn-text{
+  position: absolute;
+  top: 1%;
+  left:22%;
+  font-size: 10px;
+  font-family: "Courier new";
+  font-weight: bold;
+  color: red;
+  /*transform: translate(-10%,+10%);*/
+  height: 10px;
+  width: 40px;
 }
 
 .catch-up-line{
@@ -825,6 +857,7 @@ video {
   background-color: white;
   border-radius: 10px;
   border: solid rgb(200, 200, 200);
+  display: none;
 }
 
 .transcript-title{
@@ -854,6 +887,167 @@ video {
   font-family: "Courier new";
   color: black;
   cursor: pointer;  
+}
+
+.progress-container{
+  position: absolute;
+  left: 5%;
+  height: 100%;
+  top: -80%;
+}
+.time-progress{
+  position: absolute;
+  left: 5%;
+  top: 1%;
+  color: red;
+  font-size: 12px;
+  font-family: "Courier new";
+  font-weight: bold;
+  z-index: 20;
+}
+
+.minimize-btn{
+  position: absolute;
+  right: 0%;
+  top: 1%;
+  height: 5%;
+  width: 10%;
+  cursor: pointer;
+}
+
+.maximize-btn{
+  position: absolute;
+  right: 0%;
+  top: 1%;
+  height: 5%;
+  width: 2%;
+  cursor: pointer;
+  display: none;
+}
+
+.email-popup{
+  position: absolute;
+  right: 1%;
+  top: 1%;
+  width: 60px;
+  height: 50px;
+  background-color: white;
+  /* padding:5px;
+  align-items: center; */
+  z-index: 10;
+  /* border-radius: 10px; */
+  cursor: pointer;
+  display: none;
+}
+.mail-icon{
+  position: absolute;
+  width: 100%;
+  margin: 5px;
+}
+
+.mail-background{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color:white;
+}
+.mail-container{
+  flex-direction: column;
+  position: absolute;
+  left: 20%;
+  top: 10%;
+  width: 60%;
+  height: 60%;
+  background-color: white;
+  border-radius: 30px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.questions{
+  width: 90%;
+  height: 50%;
+  border-radius: 25px;
+}
+
+.question-text{
+  position: relative;
+  width: 100%;
+  height: 85%;
+  background-color: white;
+  border-radius: 25px;
+  padding: 10px;
+  font-size: 15px;
+  /* font-weight: bold; */
+  font-family: Monospace;
+}
+
+.answers{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* position: absolute; */
+  top: 50%;
+  width: 100%;
+  height: 50%;
+  justify-content: flex-start;
+}
+
+.answer-block{ 
+  /* position: absolute; */
+  width: 90%;
+  height: 30%;
+  /* margin: auto; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  /* top: 50%; */
+}
+
+.question{
+  /* position: absolute; */
+  width: 90%;
+  height: 20%;
+  left: 5%;
+  font-family: Monospace;
+  /* top: 35%; */
+}
+.answer{
+  width: 90%;
+  height: 50%;
+  /* position: absolute; */
+  left: 5%;
+  /* top: 50%; */
+  border: 2px solid lightgray;
+  border-radius: 5px;
+  text-align: top left;
+  font-family:Monospace;
+}
+
+.button-bar{
+  position: absolute;
+  display: flex;
+  height: 8%;
+  width: 100%;
+  bottom: 1%;
+}
+
+.next-button{
+  position: absolute;
+  right: 1%;
+  bottom: 5%;
+  
+  width: 10%;
+  height: 95%;
+  border-radius: 15px;
+  font-family:'Courier New', Courier, monospace;
+  font-weight: bold;
+  color: white;
+  border: none;
+  background-color: rgb(6, 47, 104);
+  cursor: pointer;
 }
 
 
