@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+:root{
+  --navyblue: #030d62;
+}
+
 body {
   margin: 0;
 }
@@ -27,9 +31,10 @@ body {
   left: 5%;
   /*justify-content: left;*/
   margin-inline: auto;
-  background-color: black;
+  background-color: white;
   border-style: solid;
   border-color: #e06666;
+  /* border-color: transparent; */
   border-width: 7px;
   border-radius: 5px;
 }
@@ -197,7 +202,7 @@ video {
 }
 
 .timeline {
-  background-color: rgba(220, 220, 220, .5);
+  background-color: white;
   height: 10px;
   width: 100%;
   position: relative
@@ -362,7 +367,7 @@ video {
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  background-color: black;
+  background-color: lightgrey;
   z-index: 20;
 
 }
@@ -493,6 +498,7 @@ video {
 }
 .big-window-prompt{
   background-size: contain;
+  height: 20px;
   left: 5%;
   top: 3%;
   bottom: 0%;
@@ -500,7 +506,7 @@ video {
   font-family: "Courier new";
   font-weight: bold;
   background-color: rgba(256, 256, 256, 0.8);
-  color: red;
+  color: black;
   position: absolute;
   display: none;
 }
@@ -837,6 +843,11 @@ video {
   display: none;
 }
 
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
 .catch-up-time-text{
   position: absolute;
   bottom: 0%;
@@ -846,7 +857,11 @@ video {
   font-weight: bold;
   color: grey;
   transform: translate(-50%,-220%);
+  animation: none;
+  /* animation: blinker 0.75s step-start infinite; */
 }
+
+
 
 .transcript{
   position: absolute;
@@ -1048,6 +1063,17 @@ video {
   border: none;
   background-color: rgb(6, 47, 104);
   cursor: pointer;
+}
+
+.play-watermark{
+  position: absolute;
+  height: 50%;
+  width: 25%;
+  opacity: 70%;
+  left: 35%;
+  top: 25%;
+  display: none;
+  pointer-events: none;
 }
 
 
