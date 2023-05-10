@@ -10,6 +10,19 @@
 </head>
 <body>
   <div class="video-container paused" data-volume-level="high">
+
+    <div class="popup-container">
+      <span class="popup-text">
+        Hello! Welcome to our user study!
+
+        When you are ready click on the button below to start the live class. 
+        Once the lecture starts, you cannot pause or stop it as it is simulating a live lecture.
+        </br>
+        
+      </span>
+      <button class="popup-button">Start!</button>
+    </div>
+
     <div class="email-popup">
       <img class="mail-icon" src="assets/mail.png">
     </div>
@@ -109,12 +122,12 @@
         <span></span>
         <input type="checkbox" id="answer" value="">
       </div>
-      <span class="async-subtitle-text"></span>
+      <span class="async-subtitle-text" style="display: none"></span>
 
       <div class="async-controls">
         <div class="close-btn"><img src="assets/close-btn.png" class="btn-img"></div>
         <div class="skip-back-btn"><img src="assets/skip-back.png" class="btn-img"></div>
-        <div class="play-btn"><img src="assets/pause-btn.png" class="btn-img"></div>
+        <div class="play-btn" style="display:none"><img src="assets/pause-btn.png" class="btn-img"></div>
         <div class="skip-forward-btn"><img src="assets/skip-forward.png" class="btn-img"></div>
         <div class="speed-container">
           <span class="speed-text">1.0</span>
@@ -127,7 +140,7 @@
 
 
         <div class="alert-tool-bar">
-          <div class="slider-btn">
+          <div class="slider-btn" style="display: none">
           <div class="slider">
             <img src="assets/flag.png" class="slider-img">
             <span class="slider-text"></span>
@@ -139,6 +152,7 @@
         <img src="assets/timer2.png" class="slider-img">
         <span class="slider-text"></span>
         <span class="alert-mark">!</span>
+        <div class="switch-line"></div>
       </div>
       <div class="bookmark-btn">
         <img src="assets/bookmark2.png" class="slider-img">
@@ -169,7 +183,7 @@
       <track kind="captions" srclang="en" src="assets/subtitles.vtt">
     </video>
     <span class="small-window-prompt"></span>
-    <span class="sync-subtitle-text"></span>
+    <span class="sync-subtitle-text" style="display: none"></span>
     <span class="live-label">LIVE</span>
     <img class="audio-btn-live" src="assets/audio.png">
     <div class="minimize-btn">
