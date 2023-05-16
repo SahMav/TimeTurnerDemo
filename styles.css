@@ -1082,18 +1082,27 @@ video {
   white-space: pre-line;
 }
 
-.popup-button{
+.button-container{
   position: absolute;
-  width: 28%;
+  top: 70%;
   height: 20%;
-  left: 37%;
+  width: 100%;
+  display: flex;
+}
+.popup-button{
+  /*position: absolute;*/
+  width: 20%;
+  height: 100%;
+  /*left: 37%;*/
   top: 65%;
+  margin: 10px;
   background-color: rgb(0, 0, 67);
   border-radius: 10px;
   font-size: 15px;
   font-family: Monospace;
   font-weight: bold;
   color: white;
+  cursor: pointer;
 
 }
 

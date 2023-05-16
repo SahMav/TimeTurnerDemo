@@ -55,7 +55,10 @@ const maximizeBtn = document.querySelector(".maximize-btn")
 const emailPopup = document.querySelector(".email-popup")
 const popupContainer = document.querySelector(".popup-container")
 const popupText = document.querySelector(".popup-text")
-const popupButton = document.querySelector(".popup-button")
+const popupButtonA = document.getElementById("popup-button-A")
+const popupButtonB = document.getElementById("popup-button-B")
+const popupButtonC = document.getElementById("popup-button-C")
+const popupButtonD = document.getElementById("popup-button-D")
 
 
 
@@ -68,7 +71,7 @@ const inf = 1000000
 
 
 //video information specific to each video
-var eventTimesList = ["4:30", "5:15", "9:39", "15:47", "16:50", "50:0"]
+var eventTimesList = ["4:30", "5:15", "9:35", "15:47", "16:50", "50:0"]
 const promptsList = ["Molecules come together to form what?", "What is the cell membrane mostly made of? ", "What are the monomers of the proteins?", "What's a mosaic?", "Remember, we talked about oligosaccharides. What are they used for?"]
 
 
@@ -1327,7 +1330,7 @@ maximizeBtn.addEventListener("click", maximizeLiveWindow)
 //shows and hides the email pop up
 
 const switchAudio = "assets/switch-alert.mp3"
-let switchTimes = ['30:0']
+let switchTimes = ['11:20','30:0']
 let interruptionLength = 45
 switchTimes = convertToSeconds(switchTimes)
 
@@ -1335,10 +1338,10 @@ let switchInd = 0
 
 function updatePopup(){
 	//show mail on email times
-	if(syncVideo.currentTime > switchTimes[switchInd]){
+	if(syncVideo.currentTime > switchTimes[switchInd] && syncVideo.currentTime < switchTimes[switchInd] + 5){
     popupType = 'switch'
-    popupText.textContent = "You are late to submit your English assignment! \r\n \r\n Click on the button below to finish it and submit before the deadline! "
-    popupButton.textContent = "Open Assignment"
+    popupText.textContent = "You have to finish your assignmetn before it is due! \r\n \r\n Click on the button below to go to your assignment! "
+    popupButtonA.textContent = "Open assignment"
     popupContainer.style.display = "block"
     playSound(switchAudio)
 		switchInd += 1
@@ -1346,8 +1349,8 @@ function updatePopup(){
   if(syncVideo.ended){
     popupType = 'end'
     popupText.textContent = "Thank you for finishing this lecture! \r\n \r\n Your completion code is \"ShapeDone$\". Return to the survey, copy and paste the completion code in the text box to move on to the next step!"
-    popupButton.textContent = "Take the Quiz!"
-    popupButton.style.display = "none"
+    popupButtonA.textContent = "Take the Quiz!"
+    popupButtonA.style.display = "none"
     popupContainer.style.display = "block"
   }
 }
@@ -1355,11 +1358,19 @@ function updatePopup(){
 // control the message pop up
 
 let popupType = 'start'  // popupType can be 'start', 'switch', 'end'
-popupButton.addEventListener("click", handlePopupButton)
+popupButtonA.addEventListener("click", handlePopupButtonA)
+popupButtonB.addEventListener("click", handlePopupButtonB)
+popupButtonC.addEventListener("click", handlePopupButtonC)
+popupButtonD.addEventListener("click", handlePopupButtonD)
 
-function handlePopupButton(){
+function handlePopupButtonA(){
   if(popupType == 'start'){
     popupContainer.style.display = "none"
+    popupButtonB.remove();
+    popupButtonC.remove();
+    popupButtonD.remove();
+    video.currentTime = 660
+    syncVideo.currentTime = 660
     togglePlay()
   }
   if(popupType == 'switch'){
@@ -1374,14 +1385,39 @@ function handlePopupButton(){
   }
 }
 
+function handlePopupButtonB(){
+	if(popupType == 'start'){
+		popupContainer.style.display = "none"
+    	togglePlay()
+	}
+}
+
+function handlePopupButtonC(){
+	if(popupType == 'start'){
+		popupContainer.style.display = "none"
+		video.currentTime = 230
+    	syncVideo.currentTime = 230
+    	togglePlay()
+	}
+}
+
+function handlePopupButtonD(){
+	if(popupType == 'start'){
+		popupContainer.style.display = "none"
+		video.currentTime = 550
+    	syncVideo.currentTime = 550
+    	startAV(520)
+    	togglePlay()
+	}
+}
 
 //----- original video player
 document.addEventListener("keydown", e => {
   const tagName = document.activeElement.tagName.toLowerCase()
-  if(e.keyCode == 32){
-  	togglePlayPause()
-  	return
-  }
+  // if(e.keyCode == 32){
+  // 	togglePlayPause()
+  // 	return
+  // }
   if (tagName === "input") return
 
   switch (e.key.toLowerCase()) {
@@ -1405,9 +1441,9 @@ document.addEventListener("keydown", e => {
     case "m":
       toggleMute()
       break
-    case "space":
-      togglePlayPause()
-      break
+    // case "space":
+    //   togglePlayPause()
+    //   break
     case "arrowleft":
     case "j":
       skipBack()
@@ -1416,9 +1452,11 @@ document.addEventListener("keydown", e => {
     case "l":
       skipForward()
       break
-    case "c":
-      toggleCaptions()
-      break
+    case "b":
+    	syncVideo.currentTime += 300;
+    	video.currentTime += 300;
+    	break
+
     case "arrowup":
       increaseSpeed()
       break
@@ -1502,16 +1540,16 @@ function changePlaybackSpeed() {
 }
 
 // Captions
-const captions = video.textTracks[0]
-captions.mode = "hidden"
+// const captions = video.textTracks[0]
+// captions.mode = "hidden"
 
-captionsBtn.addEventListener("click", toggleCaptions)
+// captionsBtn.addEventListener("click", toggleCaptions)
 
-function toggleCaptions() {
-  const isHidden = captions.mode === "hidden"
-  captions.mode = isHidden ? "showing" : "hidden"
-  videoContainer.classList.toggle("captions", isHidden)
-}
+// function toggleCaptions() {
+//   const isHidden = captions.mode === "hidden"
+//   captions.mode = isHidden ? "showing" : "hidden"
+//   videoContainer.classList.toggle("captions", isHidden)
+// }
 
 // Duration
 video.addEventListener("loadeddata", () => {
